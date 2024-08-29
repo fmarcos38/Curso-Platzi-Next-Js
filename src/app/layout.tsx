@@ -1,8 +1,15 @@
+//este arch SERÍA como APP
+import {Roboto} from 'next/font/google'//utilizando una fuentes de google
 import { Footer } from 'app/components/shared/Footer'
 import { Header } from 'app/components/shared/Header'
-import { Inter } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'] })
+//importo estilos globales que declaré en el arch de la carpeta sass
+import 'app/sass/globals.sass'
+
+const roboto = Roboto({ //por estar con TypeScript si le doy Ctrl + click SOBRE Roboto veo sus propiedades
+  weight: ["400", "700"], //puedo poner uno o más
+  subsets: ["latin"],
+}); //aquí se está creando una instancia de la fuente de Google
 
 export default function RootLayout({
   children,
@@ -11,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={roboto.className}>
         <Header/>
         {children}
         <Footer/>
