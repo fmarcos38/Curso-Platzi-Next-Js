@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Product } from 'app/models/products';
 import styles from './MainProducts.module.sass';
-import { getProducts } from 'app/services/shopify';
+import { getProducts } from 'app/services/shopify/products';
 
 
 export const MainProducts = async () => {//vuelvo el componente async (SOLO en los componentes de SERVIDOR)
