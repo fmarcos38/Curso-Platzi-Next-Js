@@ -6,9 +6,10 @@ interface CategoryProps {
 }
 
 export default function Category(props: CategoryProps) {
-    console.log(props)
+    
     const { categories } = props.params
-    console.log(categories)
+    //creo un error PARA ver mi pag de error 404
+    //throw new Error("Error: Boom!!");
     return (
         <h1>Categoria dinámica: {categories}</h1>
     )

@@ -1,27 +1,14 @@
 import Image from 'next/image';
 import { Product } from 'app/models/products';
 import styles from './MainProducts.module.sass';
-
-
-//creo funcion asincrona para traer los prods de shopify
-const getProducts = async () => {
-  try {
-    const response = await fetch(`https://${process.env.SHOPIFY_HOSTNAME}/admin/api/2023-10/products.json`, {
-      headers: new Headers({
-        'X-Shopify-Access-Token': process.env.SHOPIFY_API_KEY || ""
-      })
-    });
-    const data = await response.json()
-    return data.products;
-  } catch (error) {
-    console.log(error);
-  }
-}
+import { getProducts } from 'app/services/shopify';
 
 
 export const MainProducts = async () => {//vuelvo el componente async (SOLO en los componentes de SERVIDOR)
 
-  const products = await getProducts();
+  //const products = await getProducts(); //opción A
+  const response = await fetch('http://localhost:3000/api'); //metodología Back for Frontend
+  const { products } = await response.json();
 
   return (
     <section className={styles.MainProducts}>
