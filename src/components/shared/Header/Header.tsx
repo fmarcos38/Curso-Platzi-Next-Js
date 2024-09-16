@@ -1,7 +1,6 @@
 import Link from 'next/link'
 
 export const Header = () => {
-  console.log('Hola mundo header')
   return (<header>
     <nav>
       <ul>

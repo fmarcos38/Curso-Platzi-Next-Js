@@ -4,7 +4,7 @@ interface ErrorPageProps {
     reset: () => void;
 }
 
-//interfaz para los productos
+// para los productos
 type ProductType = {
     id: string;
     title: string;

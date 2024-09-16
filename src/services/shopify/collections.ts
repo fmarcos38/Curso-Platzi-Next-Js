@@ -30,9 +30,9 @@ export const getCollectionProducts = async(id: string) => {
     try {
         const response = await fetch(shopifyUrls.collections.products(id), {
             headers: new Headers({
-              'X-Shopify-Access-Token': env.SHOPIFY_API_KEY
+                'X-Shopify-Access-Token': env.SHOPIFY_API_KEY
             })
-          })
+        })
 
         const {products} = await response.json();
         return products;

@@ -1,14 +1,14 @@
 import Image from 'next/image';
 import { Product } from 'app/models/products';
 import styles from './MainProducts.module.sass';
-import { getProducts } from 'app/services/shopify/products';
+import { getMainProducts } from 'app/services/shopify/products';
 
 
 export const MainProducts = async () => {//vuelvo el componente async (SOLO en los componentes de SERVIDOR)
 
-  //const products = await getProducts(); //opción A
-  const response = await fetch('http://localhost:3000/api'); //metodología Back for Frontend
-  const { products } = await response.json();
+  const products = await getMainProducts(); //opción A
+  //const response = await fetch('http://localhost:3000/api'); //metodología Back for Frontend para obtener productos
+
 
   return (
     <section className={styles.MainProducts}>
