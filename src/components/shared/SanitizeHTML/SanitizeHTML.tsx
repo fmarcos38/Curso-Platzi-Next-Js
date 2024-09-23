@@ -16,7 +16,7 @@ import React, { createElement, HTMLAttributes } from 'react'
 function SanitizeHTML({tag, children, ...rest}: SanitizeHTMLProps) {
 
     const sanitizedHTML = sanitize(children, {
-        allwedTags: ['b', 'p', 'em', 'strong'],
+        allowedTags: [],
     });
 
     return createElement(
