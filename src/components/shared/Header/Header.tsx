@@ -1,23 +1,35 @@
 import Link from 'next/link'
-import { cookies } from 'next/headers'
+//import ShoppingCart  from '../ShoppingCart'; //utilizo el de abajo No SSR
+import { validateAccessToken } from 'app/utils/auth/validateAccessToken'
+import dynamic from 'next/dynamic'; //para q el componente no pase por la hidratacion(osea q sea un componente q NO pase por SERVER SER RENDER) CAP 48
+import styles from './Header.module.sass'
 
+const NoSSRShoppingCart = dynamic(() => import('../ShoppingCart'), {ssr: false});
 
-export const Header = () => {
+export const Header = async () => {
+  const customer = await validateAccessToken()
 
-  const cookiesStore = cookies();
-  const token = cookiesStore.get('accessToken')?.value; //obtengo el token alojado en la cookie
-
-  return (<header>
-    <nav>
-      <ul>
-        <Link href="/">
-          <li>Home</li>
-        </Link>
-        <Link href="/store">
-          <li>Store</li>
-        </Link>
-      </ul>
-      {token ? <p>Hola!</p> : <Link href="/login">Login</Link>}
-    </nav>
-  </header>)
+  return (
+    <header className={styles.Header}>
+      <nav>
+        <ul className={styles.Header__list}>
+          <li>
+            <Link href="/">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link href="/store">
+              Store
+            </Link>
+          </li>
+        </ul>
+      </nav>
+      <div className={styles.Header__user}>
+        {customer?.firstName ? (<p>Hola! {customer.firstName}</p>) : (<Link href="/login">Login</Link>)}
+        {/* carrito de compras */}
+        {/* <ShoppingCart /> */}
+        <NoSSRShoppingCart/> {/* componente no SSR */}
+      </div>
+    </header>)
 }

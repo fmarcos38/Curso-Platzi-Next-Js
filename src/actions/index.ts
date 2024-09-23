@@ -1,10 +1,13 @@
 "use server"
 import { GraphQLClientSingleton } from "app/graphql"
+import { createCartMutation } from "app/graphql/mutations/createCartMutation"
 import { createUserMutation } from "app/graphql/mutations/createUserMutation"
 import { createAccessToken } from "app/utils/auth/createAccessToken"
+import { validateAccessToken } from "app/utils/auth/validateAccessToken"
+import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
-//crea cliente/user
+//crear usuario
 export const handleCreateUser = async (formData: FormData) => {
     const formDataObject = Object.fromEntries(formData)
     delete formDataObject["password_confirmation"]
@@ -19,20 +22,47 @@ export const handleCreateUser = async (formData: FormData) => {
     const { customerCreate } = await graphqlClient.request(createUserMutation, variables)
     const { customerUserErrors, customer } = customerCreate
     if (customer?.firstName) {
-        /* console.log(customer)
-        console.log(customerUserErrors) */
         await createAccessToken(formDataObject.email as string, formDataObject.password as string)
-        redirect('/store') //una ves realizado el login HAGO redirect a /store
-    }
-}
-
-
-//LOGIN
-export const handleLogin = async (formData: FormData) => {
-    const formDataObject = Object.fromEntries(formData)
-    const accesToken = await createAccessToken(formDataObject.email as string, formDataObject.password as string)
-    if(accesToken){
         redirect('/store')
     }
 }
+//login
+export const handleLogin = async (formData: FormData) => {
+    const formDataObject = Object.fromEntries(formData)
+    const accesToken = await createAccessToken(formDataObject.email as string, formDataObject.password as string)
+    if (accesToken) {
+        redirect('/store')
+    }
+}
+//carrito
+export const handleCreateCart = async (items: CartItem[]) => {
+    const cookiesStore = cookies()
+    const accesToken = cookiesStore.get('accessToken')?.value as string
 
+    if (!accesToken) redirect('/login')
+
+    const graphqlClient = GraphQLClientSingleton.getInstance().getClient()
+    const customer = await validateAccessToken()
+    const variables = {
+        input: {
+            buyerIdentity: {
+                customerAccessToken: accesToken,
+                email: customer?.email //email del client
+            },
+            lines: items.map(item => ({
+                merchandiseId: item.merchandiseId,
+                quantity: item.quantity
+            }))
+        }
+    }
+
+    const { cartCreate }: {
+        cartCreate?: { //creacion del carrito
+            cart?: {
+                checkoutUrl: string
+            }
+        }
+    } = await graphqlClient.request(createCartMutation, variables)
+
+    return cartCreate?.cart?.checkoutUrl; //retorna un vlor, NO una respuesta como un endpoint
+}
